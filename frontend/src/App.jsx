@@ -1,12 +1,25 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Tasks from "./components/Tasks";
 import CriarTask from "./components/CriarTask";
 
 
 export default function App(){
- // const [nome, setNome] = useState("Pedro") //criando uma variável dinâmica. o nome dela é "nome" e uma função set nome, pra quando formos modificar o valor dela.
-    const [tasks, setTasks] = useState([{id: 1, titulo: "Aprender React", desc: "Aprender React para se sair melhor em uma entrevista futura", status: false},{id: 2, titulo: "Aprender Express", desc: "Aprender Express para se sair melhor em uma entrevista futura", status: true}])
+ // const [nome, setNome] = useState("Pedro") //criando um estado — sempre que for alterado o componente é renderizado novamente. o nome dela é "nome" e uma função set nome, pra quando formos modificar o valor dela.
+    const [tasks, setTasks] = useState([])
+
+    useEffect(() => {
+      async function buscarNoBackend(){
+        const dadosJson = await fetch("http://localhost:3000/")
+        const dados = await dadosJson.json()
+        console.log(dados)
+        setTasks(dados)
+      }
+      buscarNoBackend()
+    }, [])
+ 
+
     function onTaskClick(taskId){
+
       const novasTasks = tasks.map((task) =>
       {
         if (taskId == task.id){
