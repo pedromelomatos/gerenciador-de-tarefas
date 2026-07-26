@@ -1,7 +1,6 @@
 import { ChevronsRightIcon, DeleteIcon } from "lucide-react"
 
 export default function Tasks(props){
-    console.log(props.tasks[0])
     return(
 
         <ul className="space-y-4 p-6 bg-slate-200 rounded-md shadow" >

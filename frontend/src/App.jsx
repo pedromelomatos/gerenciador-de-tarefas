@@ -7,13 +7,13 @@ export default function App(){
  // const [nome, setNome] = useState("Pedro") //criando um estado — sempre que for alterado o componente é renderizado novamente. o nome dela é "nome" e uma função set nome, pra quando formos modificar o valor dela.
     const [tasks, setTasks] = useState([])
 
-    useEffect(() => {
-      async function buscarNoBackend(){
-        const dadosJson = await fetch("http://localhost:3000/")
-        const dados = await dadosJson.json()
-        console.log(dados)
-        setTasks(dados)
+    async function buscarNoBackend(){
+      const dadosJson = await fetch("http://localhost:3000/")
+      const dados = await dadosJson.json()
+      setTasks(dados)
       }
+
+    useEffect(() => {
       buscarNoBackend()
     }, [])
  
@@ -28,22 +28,34 @@ export default function App(){
         return task
       })
       setTasks(novasTasks)
+      
     }
 
-    function deletarTask(taskId){
-      const novasTasks = tasks.filter((task) => task.id != taskId)
-      setTasks(novasTasks)
+    async function deletarTask(taskId){
+      const requisicaoDelete = await fetch(`http://localhost:3000/deletarTarefa/${taskId}`, {method: "DELETE"})
+      const resposta = await requisicaoDelete.json()
+      console.log(resposta)
+      await buscarNoBackend()
     }
 
-    function onAddNewTaskClick(titulo, desc){
+    async function onAddNewTaskClick(titulo, desc){
       const novaTask = {
         id: tasks.length + 1,
         titulo: titulo,
         desc: desc,
         status: false
       }
-      setTasks([...tasks, novaTask])
+
+      const requisicaoPost = await fetch("http://localhost:3000/criarTarefa", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(novaTask)
+      })
+
+      await buscarNoBackend()
+      
     }
+
 
     return (
     <div className="w-screen h-screen bg-slate-800 flex justify-center p-6">
